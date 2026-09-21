@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTS - Leaderboard & Pitch</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            neon: '#00ff88',
+                            cyan: '#00d8ff',
+                            gold: '#fbbf24',
+                            darkBg: '#0b0f19',
+                            cardBg: '#111827',
+                            cardBorder: '#1f2937'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+        }
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+        }
+        .gold-glow {
+            box-shadow: 0 0 25px rgba(251, 191, 36, 0.25);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #00ff88 0%, #00d8ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gold-gradient {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .bg-pitch {
+            background-color: #0a2215;
+            background-image: 
+                radial-gradient(circle at center, rgba(0, 255, 136, 0.08) 0%, transparent 70%),
+                linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+        }
+        .pitch-line {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #374151;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brand-neon selection:text-black">
+
+    <!-- Top Navbar -->
+    <header class="sticky top-0 z-40 bg-gray-900/90 backdrop-blur-md border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Title -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('all-time')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-400 flex items-center justify-center text-gray-950 font-black text-xl shadow-lg shadow-emerald-500/20">
+                        CTS
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold tracking-tight text-white block leading-none">CTS <span class="text-gradient">Leaderboard</span></span>
+                        <span class="text-xs text-gray-400 font-medium tracking-wide">Goal & Pitch Hub</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Tabs -->
+                <nav class="hidden md:flex space-x-1">
+                    <button onclick="switchTab('all-time')" id="nav-all-time" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-brand-neon bg-emerald-500/10 border border-emerald-500/30">
+                        <i class="fa-solid fa-trophy mr-2 text-amber-400"></i>All-Time
+                    </button>
+                    <button onclick="switchTab('september')" id="nav-september" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-400 hover:text-white hover:bg-gray-800 transition-all duration-200">
+                        <i class="fa-solid fa-calendar-days mr-2"></i>September
+                    </button>
+                    <button onclick="switchTab('august')" id="nav-august" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-400 hover:text-white hover:bg-gray-800 transition-all duration-200">
+                        <i class="fa-solid fa-calendar-check mr-2"></i>August
+                    </button>
+                    <button onclick="switchTab('formations')" id="nav-formations" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-400 hover:text-white hover:bg-gray-800 transition-all duration-200">
+                        <i class="fa-solid fa-futbol mr-2 text-emerald-400"></i>Team Formations
+                    </button>
+                </nav>
+
+                <!-- Mobile Navigation Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-b border-gray-800 bg-gray-900 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTab('all-time'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold text-brand-neon bg-emerald-500/10">
+                <i class="fa-solid fa-trophy mr-2 text-amber-400"></i>All-Time Stats
+            </button>
+            <button onclick="switchTab('september'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold text-gray-300 hover:bg-gray-800">
+                <i class="fa-solid fa-calendar-days mr-2"></i>September
+            </button>
+            <button onclick="switchTab('august'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold text-gray-300 hover:bg-gray-800">
+                <i class="fa-solid fa-calendar-check mr-2"></i>August
+            </button>
+            <button onclick="switchTab('formations'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold text-gray-300 hover:bg-gray-800">
+                <i class="fa-solid fa-futbol mr-2 text-emerald-400"></i>Team Formations
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- Banner Header -->
+        <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border border-gray-800 relative overflow-hidden shadow-2xl">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute right-20 -top-10 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 id="tab-title" class="text-3xl font-black text-white tracking-tight sm:text-4xl">
+                        All-Time <span class="text-gradient">Leaderboard</span>
+                    </h1>
+                    <p id="tab-subtitle" class="text-gray-400 mt-1 text-sm sm:text-base">
+                        Complete goal and assist stats across all active match sessions.
+                    </p>
+                </div>
+
+                <!-- All-Time Sorting Controls (Hidden on September/August/Formations) -->
+                <div id="sort-controls" class="flex flex-wrap items-center gap-2 bg-gray-950/70 p-1.5 rounded-xl border border-gray-800">
+                    <span class="text-xs font-semibold text-gray-400 px-2 uppercase tracking-wider">Sort By:</span>
+                    <button onclick="setSortMetric('ga')" id="sort-ga" class="sort-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-emerald-500 text-gray-950">
+                        G + A Total
+                    </button>
+                    <button onclick="setSortMetric('goals')" id="sort-goals" class="sort-btn px-3 py-1.5 rounded-lg text-xs font-bold text-gray-300 hover:text-white hover:bg-gray-800">
+                        Goals
+                    </button>
+                    <button onclick="setSortMetric('assists')" id="sort-assists" class="sort-btn px-3 py-1.5 rounded-lg text-xs font-bold text-gray-300 hover:text-white hover:bg-gray-800">
+                        Assists
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metric KPI Highlight Cards -->
+        <div id="kpi-cards-container" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <!-- Dynamically populated KPI summary cards -->
+        </div>
+
+        <!-- ================= SECTION: STATS (All-Time / September / August) ================= -->
+        <div id="stats-tab-content" class="space-y-8">
+            
+            <!-- Dynamic Podium Showcase -->
+            <div id="podium-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end pt-2 pb-2">
+                <!-- Dynamic Podium cards injected here -->
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-gray-900 p-4 rounded-xl border border-gray-800 shadow-lg">
+                <div class="relative w-full sm:w-80">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <input type="text" id="player-search" oninput="renderStats()" placeholder="Search player name..." 
+                           class="w-full bg-gray-950 border border-gray-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                </div>
+
+                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                    <span class="text-xs text-gray-400 font-medium" id="player-count">Showing 21 Players</span>
+                    <button onclick="toggleViewMode('table')" id="btn-view-table" class="p-2 rounded-lg bg-gray-800 text-emerald-400 hover:bg-gray-700 transition">
+                        <i class="fa-solid fa-list-ul"></i>
+                    </button>
+                    <button onclick="toggleViewMode('grid')" id="btn-view-grid" class="p-2 rounded-lg bg-gray-950 text-gray-400 hover:bg-gray-800 transition">
+                        <i class="fa-solid fa-border-all"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table View -->
+            <div id="view-table" class="overflow-x-auto rounded-xl border border-gray-800 bg-gray-900 shadow-xl">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr id="table-header-row" class="bg-gray-950/90 border-b border-gray-800 text-xs text-gray-400 uppercase tracking-wider">
+                            <!-- Dynamic Table Headers based on current tab -->
+                        </tr>
+                    </thead>
+                    <tbody id="stats-table-body" class="divide-y divide-gray-800/60 text-sm font-medium">
+                        <!-- Dynamic Table rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Grid View -->
+            <div id="view-grid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <!-- Dynamic Grid Cards -->
+            </div>
+        </div>
+
+        <!-- ================= SECTION: FORMATIONS TAB ================= -->
+        <div id="formations-tab-content" class="hidden space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Team A Formation -->
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-3">
+                            <div class="flex items-center space-x-3">
+                                <span class="w-4 h-4 rounded-full bg-cyan-400 shadow-md shadow-cyan-400/50"></span>
+                                <h2 class="text-xl font-bold text-white">Team A Squad</h2>
+                            </div>
+                            <span class="text-xs bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-semibold px-2.5 py-1 rounded-full">10 Players</span>
+                        </div>
+
+                        <!-- Tactical Pitch Diagram Team A -->
+                        <div class="bg-pitch border-2 border-emerald-500/20 rounded-xl p-4 min-h-[440px] relative flex flex-col justify-between my-4 shadow-inner overflow-hidden">
+                            <!-- Center line & circle -->
+                            <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 border-b pitch-line"></div>
+                            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 border pitch-line rounded-full"></div>
+
+                            <!-- Forwards -->
+                            <div class="relative z-10 flex justify-around my-2">
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Vishal')">
+                                    <div class="w-9 h-9 rounded-full bg-cyan-500 text-gray-950 font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">FW</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Vishal (14G)</span>
+                                </div>
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Abhinav')">
+                                    <div class="w-9 h-9 rounded-full bg-cyan-500 text-gray-950 font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">FW</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Abhinav (11G)</span>
+                                </div>
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Dhanush')">
+                                    <div class="w-9 h-9 rounded-full bg-cyan-500 text-gray-950 font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">FW</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Dhanush (9G)</span>
+                                </div>
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Tanay')">
+                                    <div class="w-9 h-9 rounded-full bg-cyan-500 text-gray-950 font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">FW</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Tanay (5G)</span>
+                                </div>
+                            </div>
+
+                            <!-- Midfielders -->
+                            <div class="relative z-10 flex justify-around my-2">
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Suraj')">
+                                    <div class="w-9 h-9 rounded-full bg-cyan-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">MID</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Suraj (4G)</span>
+                                </div>
+                            </div>
+
+                            <!-- Defenders -->
+                            <div class="relative z-10 flex justify-around my-2">
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Khushi')">
+                                    <div class="w-9 h-9 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">DEF</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Khushi (1G)</span>
+                                </div>
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Avani')">
+                                    <div class="w-9 h-9 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">DEF</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Avani</span>
+                                </div>
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Adyasha')">
+                                    <div class="w-9 h-9 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">DEF</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Adyasha</span>
+                                </div>
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Insha')">
+                                    <div class="w-9 h-9 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">DEF</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Insha</span>
+                                </div>
+                            </div>
+
+                            <!-- Goalkeeper -->
+                            <div class="relative z-10 flex justify-center my-1">
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Saksham')">
+                                    <div class="w-9 h-9 rounded-full bg-amber-500 text-gray-950 font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">GK</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Saksham</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Squad List Box -->
+                    <div class="mt-4 pt-3 border-t border-gray-800">
+                        <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Team A Roster</h4>
+                        <div class="flex flex-wrap gap-1.5" id="team-a-roster-tags"></div>
+                    </div>
+                </div>
+
+                <!-- Team B Formation -->
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-3">
+                            <div class="flex items-center space-x-3">
+                                <span class="w-4 h-4 rounded-full bg-emerald-400 shadow-md shadow-emerald-400/50"></span>
+                                <h2 class="text-xl font-bold text-white">Team B Squad</h2>
+                            </div>
+                            <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-semibold px-2.5 py-1 rounded-full">10 Players</span>
+                        </div>
+
+                        <!-- Tactical Pitch Diagram Team B -->
+                        <div class="bg-pitch border-2 border-emerald-500/20 rounded-xl p-4 min-h-[440px] relative flex flex-col justify-between my-4 shadow-inner overflow-hidden">
+                            <!-- Center line & circle -->
+                            <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 border-b pitch-line"></div>
+                            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 border pitch-line rounded-full"></div>
+
+                            <!-- Forwards -->
+                            <div class="relative z-10 flex justify-around my-2">
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Jagadeesh')">
+                                    <div class="w-9 h-9 rounded-full bg-emerald-400 text-gray-950 font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">FW</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Jagadeesh (17G)</span>
+                                </div>
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Pranav')">
+                                    <div class="w-9 h-9 rounded-full bg-emerald-400 text-gray-950 font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">FW</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Pranav (5G)</span>
+                                </div>
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Fahad')">
+                                    <div class="w-9 h-9 rounded-full bg-emerald-400 text-gray-950 font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">FW</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Fahad (2G)</span>
+                                </div>
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Medhamsh')">
+                                    <div class="w-9 h-9 rounded-full bg-emerald-400 text-gray-950 font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">FW</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Medhamsh (2G)</span>
+                                </div>
+                            </div>
+
+            
+
+                            <!-- Defenders -->
+                            <div class="relative z-10 flex justify-around my-2">
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Bhoomi')">
+                                    <div class="w-9 h-9 rounded-full bg-teal-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">DEF</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Bhoomi</span>
+                                </div>
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Sharine')">
+                                    <div class="w-9 h-9 rounded-full bg-teal-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">DEF</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Sharine</span>
+                                </div>
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Smeera')">
+                                    <div class="w-9 h-9 rounded-full bg-teal-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">DEF</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Smeera</span>
+                                </div>
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Samhitha')">
+                                    <div class="w-9 h-9 rounded-full bg-teal-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">DEF</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Samhitha</span>
+                                </div>
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Bhavyatha')">
+                                    <div class="w-9 h-9 rounded-full bg-teal-600 text-white font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">DEF</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Bhavyatha</span>
+                                </div>
+                            </div>
+
+                            <!-- Goalkeeper -->
+                            <div class="relative z-10 flex justify-center my-1">
+                                <div class="player-pitch-card cursor-pointer" onclick="openPlayerModal('Srihitha')">
+                                    <div class="w-9 h-9 rounded-full bg-amber-500 text-gray-950 font-bold flex items-center justify-center text-xs shadow-lg border-2 border-white mx-auto">GK</div>
+                                    <span class="text-xs font-bold text-white mt-1 block text-center bg-gray-950/80 px-2 py-0.5 rounded shadow">Srihitha</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Squad List Box -->
+                    <div class="mt-4 pt-3 border-t border-gray-800">
+                        <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Team B Roster</h4>
+                        <div class="flex flex-wrap gap-1.5" id="team-b-roster-tags"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Player Breakdown Modal -->
+    <div id="player-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-gray-900 border border-gray-800 w-full max-w-lg rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+            <!-- Background Glow -->
+            <div class="absolute -top-12 -right-12 w-40 h-40 bg-emerald-500/20 rounded-full blur-2xl"></div>
+
+            <!-- Close Button -->
+            <button onclick="closePlayerModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-gray-800 p-2 rounded-lg transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Modal Content (Dynamic) -->
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 bg-gray-950 py-6 text-center text-xs text-gray-500">
+        <p>© 2026 CTS Goal & Pitch Hub • Official Match Stats Tracker</p>
+    </footer>
+
+    <script>
+        // MASTER PLAYER ROSTER & DATA
+        const PLAYERS = [
+            { name: "Jagadeesh", goals: 17, assists: 4, team: "Team B", position: "Forward", sepGoals: 14, augGoals: 3 },
+            { name: "Vishal", goals: 14, assists: 10, team: "Team A", position: "Forward", sepGoals: 7, augGoals: 8 },
+            { name: "Abhinav", goals: 11, assists: 4, team: "Team A", position: "Forward", sepGoals: 8, augGoals: 3 },
+            { name: "Dhanush", goals: 9, assists: 8, team: "Team A", position: "Forward", sepGoals: 1, augGoals: 8 },
+            { name: "Pranav", goals: 5, assists: 2, team: "Team B", position: "Forward", sepGoals: 4, augGoals: 1 },
+            { name: "Tanay", goals: 5, assists: 4, team: "Team A", position: "Forward", sepGoals: 4, augGoals: 1 },
+            { name: "Suraj", goals: 4, assists: 3, team: "Team A", position: "Midfield", sepGoals: 2, augGoals: 2 },
+            { name: "Fahad", goals: 2, assists: 2, team: "Team B", position: "Forward", sepGoals: 2, augGoals: 0 },
+            { name: "Medhamsh", goals: 2, assists: 3, team: "Team B", position: "Forward", sepGoals: 1, augGoals: 1 },
+            { name: "Khushi", goals: 1, assists: 2, team: "Team A", position: "Defense", sepGoals: 0, augGoals: 1 },
+            { name: "Insha", goals: 0, assists: 1, team: "Team A", position: "Defense", sepGoals: 0, augGoals: 0 },
+            { name: "Avani", goals: 0, assists: 1, team: "Team A", position: "Defense", sepGoals: 0, augGoals: 0 },
+            { name: "Saksham", goals: 0, assists: 4, team: "Team A", position: "GK", sepGoals: 0, augGoals: 0 },
+            { name: "Srihitha", goals: 0, assists: 0, team: "Team B", position: "GK", sepGoals: 0, augGoals: 0 },
+            { name: "Bhoomi", goals: 0, assists: 0, team: "Team B", position: "Defense", sepGoals: 0, augGoals: 0 },
+            { name: "Sharine", goals: 0, assists: 0, team: "Team B", position: "Defense", sepGoals: 0, augGoals: 0 },
+            { name: "Smeera", goals: 0, assists: 0, team: "Team B", position: "Defense", sepGoals: 0, augGoals: 0 },
+            { name: "Samhitha", goals: 0, assists: 0, team: "Team B", position: "Defense", sepGoals: 0, augGoals: 0 },
+            { name: "Bhavyatha", goals: 0, assists: 0, team: "Team B", position: "Defense", sepGoals: 0, augGoals: 0 },
+            { name: "Adyasha", goals: 0, assists: 0, team: "Team A", position: "Defense", sepGoals: 0, augGoals: 0 }
+        ];
+
+        // State Management
+        let currentTab = 'all-time'; // 'all-time', 'september', 'august', 'formations'
+        let sortMetric = 'ga'; // 'ga', 'goals', 'assists'
+        let viewMode = 'table'; // 'table', 'grid'
+
+        // Initialization
+        window.onload = function() {
+            renderStats();
+            renderRosters();
+        };
+
+        // Navigation Tab Switcher
+        function switchTab(tab) {
+            currentTab = tab;
+
+            // Reset tab button styles
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-400 hover:text-white hover:bg-gray-800 transition-all duration-200";
+            });
+
+            const activeBtn = document.getElementById(`nav-${tab}`);
+            if (activeBtn) {
+                activeBtn.className = "tab-btn px-4 py-2 rounded-lg text-sm font-semibold text-brand-neon bg-emerald-500/10 border border-emerald-500/30";
+            }
+
+            const titleEl = document.getElementById('tab-title');
+            const subTitleEl = document.getElementById('tab-subtitle');
+            const sortControls = document.getElementById('sort-controls');
+
+            if (tab === 'all-time') {
+                titleEl.innerHTML = 'All-Time <span class="text-gradient">Leaderboard</span>';
+                subTitleEl.textContent = 'Complete goal and assist stats across all active match sessions.';
+                sortControls.classList.remove('hidden');
+                document.getElementById('stats-tab-content').classList.remove('hidden');
+                document.getElementById('formations-tab-content').classList.add('hidden');
+                renderStats();
+            } else if (tab === 'september') {
+                titleEl.innerHTML = 'September <span class="text-gradient">Goals Leaderboard</span>';
+                subTitleEl.textContent = 'Official goals scored during the month of September.';
+                sortControls.classList.add('hidden');
+                document.getElementById('stats-tab-content').classList.remove('hidden');
+                document.getElementById('formations-tab-content').classList.add('hidden');
+                renderStats();
+            } else if (tab === 'august') {
+                titleEl.innerHTML = 'August <span class="text-gradient">Goals Leaderboard</span>';
+                subTitleEl.textContent = 'Official goals scored during the month of August.';
+                sortControls.classList.add('hidden');
+                document.getElementById('stats-tab-content').classList.remove('hidden');
+                document.getElementById('formations-tab-content').classList.add('hidden');
+                renderStats();
+            } else if (tab === 'formations') {
+                titleEl.innerHTML = 'Team <span class="text-gradient">Formations</span>';
+                subTitleEl.textContent = 'Tactical pitch lineups and squad rosters for Team A and Team B.';
+                sortControls.classList.add('hidden');
+                document.getElementById('stats-tab-content').classList.add('hidden');
+                document.getElementById('formations-tab-content').classList.remove('hidden');
+            }
+        }
+
+        // Set Sorting Metric for All-Time Tab
+        function setSortMetric(metric) {
+            sortMetric = metric;
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.className = "sort-btn px-3 py-1.5 rounded-lg text-xs font-bold text-gray-300 hover:text-white hover:bg-gray-800";
+            });
+
+            const activeBtn = document.getElementById(`sort-${metric}`);
+            if (activeBtn) {
+                activeBtn.className = "sort-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 text-gray-950";
+            }
+
+            renderStats();
+        }
+
+        // Toggle Table vs Grid View
+        function toggleViewMode(mode) {
+            viewMode = mode;
+            const tableEl = document.getElementById('view-table');
+            const gridEl = document.getElementById('view-grid');
+
+            if (mode === 'table') {
+                tableEl.classList.remove('hidden');
+                gridEl.classList.add('hidden');
+                document.getElementById('btn-view-table').className = "p-2 rounded-lg bg-gray-800 text-emerald-400";
+                document.getElementById('btn-view-grid').className = "p-2 rounded-lg bg-gray-950 text-gray-400 hover:bg-gray-800";
+            } else {
+                tableEl.classList.add('hidden');
+                gridEl.classList.remove('hidden');
+                document.getElementById('btn-view-table').className = "p-2 rounded-lg bg-gray-950 text-gray-400 hover:bg-gray-800";
+                document.getElementById('btn-view-grid').className = "p-2 rounded-lg bg-gray-800 text-emerald-400";
+            }
+        }
+
+        // Main Rendering Function for Stats
+        function renderStats() {
+            const searchQuery = document.getElementById('player-search').value.toLowerCase().trim();
+
+            // Prepare player array based on tab
+            let list = PLAYERS.map(p => {
+                let g = 0, a = 0;
+                if (currentTab === 'all-time') {
+                    g = p.goals;
+                    a = p.assists;
+                } else if (currentTab === 'september') {
+                    g = p.sepGoals;
+                } else if (currentTab === 'august') {
+                    g = p.augGoals;
+                }
+                return {
+                    ...p,
+                    displayGoals: g,
+                    displayAssists: a,
+                    displayGA: g + a
+                };
+            });
+
+            // Filter out non-scorers in monthly views if search is empty, but keep for search
+            if (currentTab !== 'all-time' && !searchQuery) {
+                list = list.filter(p => p.displayGoals > 0);
+            } else if (searchQuery) {
+                list = list.filter(p => p.name.toLowerCase().includes(searchQuery));
+            }
+
+            // Sorting logic
+            if (currentTab === 'all-time') {
+                list.sort((x, y) => {
+                    if (sortMetric === 'ga') {
+                        if (y.displayGA !== x.displayGA) return y.displayGA - x.displayGA;
+                        return y.displayGoals - x.displayGoals;
+                    } else if (sortMetric === 'goals') {
+                        if (y.displayGoals !== x.displayGoals) return y.displayGoals - x.displayGoals;
+                        return y.displayGA - x.displayGA;
+                    } else if (sortMetric === 'assists') {
+                        if (y.displayAssists !== x.displayAssists) return y.displayAssists - x.displayAssists;
+                        return y.displayGoals - x.displayGoals;
+                    }
+                });
+            } else {
+                // Monthly sorting purely by Goals
+                list.sort((x, y) => y.displayGoals - x.displayGoals);
+            }
+
+            document.getElementById('player-count').textContent = `Showing ${list.length} Players`;
+
+            // 1. Render Summary KPI Cards
+            renderKPICards();
+
+            // 2. Render Top Podium Cards
+            renderPodium(list);
+
+            // 3. Render Table Header & Rows
+            renderTableHeader();
+            renderTableBody(list);
+
+            // 4. Render Grid Cards
+            renderGridCards(list);
+        }
+
+        // Render Summary KPI Cards
+        function renderKPICards() {
+            const kpiContainer = document.getElementById('kpi-cards-container');
+            kpiContainer.innerHTML = '';
+
+            if (currentTab === 'all-time') {
+                const totalGoals = PLAYERS.reduce((acc, p) => acc + p.goals, 0);
+                const totalAssists = PLAYERS.reduce((acc, p) => acc + p.assists, 0);
+                const topScorer = [...PLAYERS].sort((a,b) => b.goals - a.goals)[0];
+                const topPlaymaker = [...PLAYERS].sort((a,b) => b.assists - a.assists)[0];
+
+                kpiContainer.innerHTML = `
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-lg">
+                        <span class="text-xs font-semibold text-gray-400 block uppercase">Total Goals</span>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="text-2xl font-black text-emerald-400">${totalGoals}</span>
+                            <i class="fa-solid fa-futbol text-emerald-500/20 text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-lg">
+                        <span class="text-xs font-semibold text-gray-400 block uppercase">Total Assists</span>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="text-2xl font-black text-cyan-400">${totalAssists}</span>
+                            <i class="fa-solid fa-hands-holding-circle text-cyan-500/20 text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-lg">
+                        <span class="text-xs font-semibold text-gray-400 block uppercase">Top Scorer</span>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="text-lg font-black text-white">${topScorer.name} (${topScorer.goals}G)</span>
+                            <i class="fa-solid fa-crown text-amber-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-lg">
+                        <span class="text-xs font-semibold text-gray-400 block uppercase">Top Playmaker</span>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="text-lg font-black text-white">${topPlaymaker.name} (${topPlaymaker.assists}A)</span>
+                            <i class="fa-solid fa-wand-magic-sparkles text-cyan-400 text-xl"></i>
+                        </div>
+                    </div>
+                `;
+            } else if (currentTab === 'september') {
+                const totalGoals = PLAYERS.reduce((acc, p) => acc + p.sepGoals, 0);
+                const activeScorers = PLAYERS.filter(p => p.sepGoals > 0).length;
+
+                kpiContainer.innerHTML = `
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-lg">
+                        <span class="text-xs font-semibold text-gray-400 block uppercase">September Goals</span>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="text-2xl font-black text-emerald-400">${totalGoals}</span>
+                            <i class="fa-solid fa-futbol text-emerald-500/20 text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-lg">
+                        <span class="text-xs font-semibold text-gray-400 block uppercase">Top Scorer</span>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="text-lg font-black text-white">Jagadeesh (14G)</span>
+                            <i class="fa-solid fa-crown text-amber-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-lg">
+                        <span class="text-xs font-semibold text-gray-400 block uppercase">Active Scorers</span>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="text-2xl font-black text-white">${activeScorers} Players</span>
+                            <i class="fa-solid fa-users text-gray-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-lg">
+                        <span class="text-xs font-semibold text-gray-400 block uppercase">Avg / Scorer</span>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="text-2xl font-black text-cyan-400">${(totalGoals / activeScorers).toFixed(1)}</span>
+                            <i class="fa-solid fa-chart-line text-cyan-500/20 text-xl"></i>
+                        </div>
+                    </div>
+                `;
+            } else if (currentTab === 'august') {
+                const totalGoals = PLAYERS.reduce((acc, p) => acc + p.augGoals, 0);
+                const activeScorers = PLAYERS.filter(p => p.augGoals > 0).length;
+
+                kpiContainer.innerHTML = `
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-lg">
+                        <span class="text-xs font-semibold text-gray-400 block uppercase">August Goals</span>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="text-2xl font-black text-emerald-400">${totalGoals}</span>
+                            <i class="fa-solid fa-futbol text-emerald-500/20 text-2xl"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-lg">
+                        <span class="text-xs font-semibold text-gray-400 block uppercase">Top Scorers (Tie)</span>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="text-base font-black text-amber-400">Dhanush & Vishal (8G)</span>
+                            <i class="fa-solid fa-crown text-amber-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-lg">
+                        <span class="text-xs font-semibold text-gray-400 block uppercase">Active Scorers</span>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="text-2xl font-black text-white">${activeScorers} Players</span>
+                            <i class="fa-solid fa-users text-gray-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-lg">
+                        <span class="text-xs font-semibold text-gray-400 block uppercase">Avg / Scorer</span>
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="text-2xl font-black text-cyan-400">${(totalGoals / activeScorers).toFixed(1)}</span>
+                            <i class="fa-solid fa-chart-line text-cyan-500/20 text-xl"></i>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Render Top 3 Podium Showcase
+        function renderPodium(list) {
+            const container = document.getElementById('podium-container');
+            container.innerHTML = '';
+
+            if (currentTab === 'august') {
+                // SPECIAL AUGUST PODIUM WITH TIES:
+                // 1st Place Tie: Dhanush (8G) & Vishal (8G)
+                // 2nd Place Tie: Abhinav (3G) & Jagadeesh (3G)
+                // 3rd Place: Suraj (2G)
+                container.innerHTML = `
+                    <!-- 2nd Place Box (Abhinav & Jagadeesh Tie) -->
+                    <div class="bg-gray-900 border border-slate-400/30 rounded-2xl p-5 flex flex-col justify-between cursor-pointer hover:-translate-y-1 transition shadow-xl relative">
+                        <div class="flex justify-between items-start">
+                            <span class="w-8 h-8 rounded-full bg-slate-300 text-gray-950 font-black flex items-center justify-center text-xs shadow">
+                                T-2
+                            </span>
+                            <i class="fa-solid fa-medal text-slate-300 text-2xl"></i>
+                        </div>
+                        <div class="my-4">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">2ND PLACE TIE</span>
+                            <div class="flex items-center justify-between mt-1 border-b border-gray-800 pb-2">
+                                <span class="text-base font-extrabold text-white" onclick="openPlayerModal('Abhinav')">Abhinav</span>
+                                <span class="text-sm font-black text-emerald-400">3 Goals</span>
+                            </div>
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="text-base font-extrabold text-white" onclick="openPlayerModal('Jagadeesh')">Jagadeesh</span>
+                                <span class="text-sm font-black text-emerald-400">3 Goals</span>
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-400 text-center bg-gray-950/80 py-1.5 rounded-lg border border-gray-800">
+                            Equal August Scorers
+                        </div>
+                    </div>
+
+                    <!-- 1st Place Box (Dhanush & Vishal Tie) -->
+                    <div class="bg-gray-900 border border-amber-400/50 rounded-2xl p-6 flex flex-col justify-between cursor-pointer hover:-translate-y-1 transition shadow-2xl relative gold-glow">
+                        <div class="flex justify-between items-start">
+                            <span class="w-9 h-9 rounded-full bg-amber-400 text-gray-950 font-black flex items-center justify-center text-sm shadow">
+                                T-1
+                            </span>
+                            <i class="fa-solid fa-crown text-amber-400 text-3xl"></i>
+                        </div>
+                        <div class="my-4">
+                            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block">AUGUST TOP SCORERS TIE</span>
+                            <div class="flex items-center justify-between mt-2 border-b border-gray-800/80 pb-2.5">
+                                <span class="text-lg font-black text-white" onclick="openPlayerModal('Dhanush')">Dhanush</span>
+                                <span class="text-base font-black text-emerald-400">8 Goals</span>
+                            </div>
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="text-lg font-black text-white" onclick="openPlayerModal('Vishal')">Vishal</span>
+                                <span class="text-base font-black text-emerald-400">8 Goals</span>
+                            </div>
+                        </div>
+                        <div class="text-xs text-amber-300/90 font-bold text-center bg-amber-500/10 py-2 rounded-lg border border-amber-500/20">
+                            Shared August Golden Boot
+                        </div>
+                    </div>
+
+                    <!-- 3rd Place Box (Suraj) -->
+                    <div class="bg-gray-900 border border-amber-700/40 rounded-2xl p-5 flex flex-col justify-between cursor-pointer hover:-translate-y-1 transition shadow-xl relative" onclick="openPlayerModal('Suraj')">
+                        <div class="flex justify-between items-start">
+                            <span class="w-8 h-8 rounded-full bg-amber-700 text-white font-black flex items-center justify-center text-xs shadow">
+                                3
+                            </span>
+                            <i class="fa-solid fa-award text-amber-700 text-2xl"></i>
+                        </div>
+                        <div class="my-4">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Team A • Midfield</span>
+                            <h3 class="text-xl font-black text-white mt-0.5">Suraj</h3>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-gray-800 pt-3">
+                            <span class="text-xs font-semibold text-gray-400">August Goals</span>
+                            <span class="text-xl font-black text-emerald-400">2 Goals</span>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Standard Podium for All-Time & September
+            const top3 = list.slice(0, 3);
+            if (top3.length === 0) return;
+
+            const p1 = top3[0];
+            const p2 = top3[1];
+            const p3 = top3[2];
+
+            const podiumOrder = [
+                { data: p2, rank: 2, badge: 'bg-slate-300 text-gray-950', icon: 'fa-medal text-slate-300', border: 'border-slate-300/40' },
+                { data: p1, rank: 1, badge: 'bg-amber-400 text-gray-950', icon: 'fa-crown text-amber-400', border: 'border-amber-400/50 gold-glow' },
+                { data: p3, rank: 3, badge: 'bg-amber-700 text-white', icon: 'fa-award text-amber-700', border: 'border-amber-700/40' }
+            ];
+
+            podiumOrder.forEach(item => {
+                if (!item.data) return;
+                const p = item.data;
+
+                const card = document.createElement('div');
+                card.className = `bg-gray-900 border ${item.border} rounded-2xl p-5 flex flex-col justify-between cursor-pointer transition hover:-translate-y-1 shadow-xl`;
+                card.onclick = () => openPlayerModal(p.name);
+
+                let statsBlock = '';
+                if (currentTab === 'all-time') {
+                    statsBlock = `
+                        <div class="flex items-center justify-between border-t border-gray-800/80 pt-3">
+                            <div>
+                                <span class="text-[10px] text-gray-400 block font-semibold uppercase">Goals</span>
+                                <span class="text-lg font-black text-emerald-400">${p.displayGoals}</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-gray-400 block font-semibold uppercase">Assists</span>
+                                <span class="text-lg font-black text-cyan-400">${p.displayAssists}</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-gray-400 block font-semibold uppercase">Total G+A</span>
+                                <span class="text-xl font-black text-white">${p.displayGA}</span>
+                            </div>
+                        </div>
+                    `;
+                } else { // September Monthly
+                    statsBlock = `
+                        <div class="flex items-center justify-between border-t border-gray-800/80 pt-3">
+                            <span class="text-xs font-semibold text-gray-400 uppercase">September Goals</span>
+                            <span class="text-2xl font-black text-emerald-400">${p.displayGoals} Goals</span>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <span class="w-8 h-8 rounded-full ${item.badge} font-black flex items-center justify-center text-sm shadow">
+                            ${item.rank}
+                        </span>
+                        <i class="fa-solid ${item.icon} text-2xl"></i>
+                    </div>
+
+                    <div class="my-3">
+                        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">${p.team} • ${p.position}</span>
+                        <h3 class="text-xl font-black text-white mt-0.5">${p.name}</h3>
+                    </div>
+
+                    ${statsBlock}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Render Dynamic Table Header
+        function renderTableHeader() {
+            const row = document.getElementById('table-header-row');
+            if (currentTab === 'all-time') {
+                row.innerHTML = `
+                    <th class="py-4 px-4 text-center w-16">Rank</th>
+                    <th class="py-4 px-4">Player Name</th>
+                    <th class="py-4 px-4">Team & Position</th>
+                    <th class="py-4 px-4 text-center cursor-pointer hover:text-emerald-400" onclick="setSortMetric('goals')">
+                        Goals <i class="fa-solid fa-sort text-xs ml-1"></i>
+                    </th>
+                    <th class="py-4 px-4 text-center cursor-pointer hover:text-cyan-400" onclick="setSortMetric('assists')">
+                        Assists <i class="fa-solid fa-sort text-xs ml-1"></i>
+                    </th>
+                    <th class="py-4 px-4 text-center cursor-pointer hover:text-emerald-300" onclick="setSortMetric('ga')">
+                        Total G+A <i class="fa-solid fa-sort text-xs ml-1"></i>
+                    </th>
+                    <th class="py-4 px-4 text-right pr-6">Action</th>
+                `;
+            } else { // September & August Monthly (Goals Only)
+                row.innerHTML = `
+                    <th class="py-4 px-4 text-center w-16">Rank</th>
+                    <th class="py-4 px-4">Player Name</th>
+                    <th class="py-4 px-4">Team & Position</th>
+                    <th class="py-4 px-4 text-center">
+                        ${currentTab === 'september' ? 'September Goals' : 'August Goals'}
+                    </th>
+                    <th class="py-4 px-4 text-right pr-6">Action</th>
+                `;
+            }
+        }
+
+        // Render Dynamic Table Rows
+        function renderTableBody(list) {
+            const tbody = document.getElementById('stats-table-body');
+            tbody.innerHTML = '';
+
+            list.forEach((player, index) => {
+                let rankLabel = `#${index + 1}`;
+                if (currentTab === 'august') {
+                    if (player.name === 'Dhanush' || player.name === 'Vishal') rankLabel = 'T-1';
+                    else if (player.name === 'Abhinav' || player.name === 'Jagadeesh') rankLabel = 'T-2';
+                    else if (player.name === 'Suraj') rankLabel = '3';
+                }
+
+                let rankBadge = `<span class="text-gray-400 font-medium">${rankLabel}</span>`;
+                if (rankLabel === '#1' || rankLabel === 'T-1') {
+                    rankBadge = `<span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-amber-400 text-gray-950 font-black text-xs shadow">1</span>`;
+                } else if (rankLabel === '#2' || rankLabel === 'T-2') {
+                    rankBadge = `<span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-slate-300 text-gray-950 font-black text-xs shadow">2</span>`;
+                } else if (rankLabel === '#3' || rankLabel === '3') {
+                    rankBadge = `<span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-amber-700 text-white font-black text-xs shadow">3</span>`;
+                }
+
+                const teamTagClass = player.team === 'Team A' 
+                    ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30' 
+                    : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-800/40 transition-colors cursor-pointer group";
+                tr.onclick = () => openPlayerModal(player.name);
+
+                if (currentTab === 'all-time') {
+                    tr.innerHTML = `
+                        <td class="py-3.5 px-4 text-center">${rankBadge}</td>
+                        <td class="py-3.5 px-4 font-bold text-white group-hover:text-emerald-400 transition-colors">
+                            ${player.name}
+                        </td>
+                        <td class="py-3.5 px-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${teamTagClass}">
+                                ${player.team} • ${player.position}
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-4 text-center font-bold text-emerald-400 text-base">${player.displayGoals}</td>
+                        <td class="py-3.5 px-4 text-center font-bold text-cyan-400 text-base">${player.displayAssists}</td>
+                        <td class="py-3.5 px-4 text-center font-extrabold text-white text-base">${player.displayGA}</td>
+                        <td class="py-3.5 px-4 text-right pr-6">
+                            <button class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg font-medium transition">
+                                Profile
+                            </button>
+                        </td>
+                    `;
+                } else { // September / August
+                    tr.innerHTML = `
+                        <td class="py-3.5 px-4 text-center">${rankBadge}</td>
+                        <td class="py-3.5 px-4 font-bold text-white group-hover:text-emerald-400 transition-colors">
+                            ${player.name}
+                        </td>
+                        <td class="py-3.5 px-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${teamTagClass}">
+                                ${player.team} • ${player.position}
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-4 text-center font-extrabold text-emerald-400 text-lg">${player.displayGoals}</td>
+                        <td class="py-3.5 px-4 text-right pr-6">
+                            <button class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg font-medium transition">
+                                Profile
+                            </button>
+                        </td>
+                    `;
+                }
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Render Dynamic Grid View Cards
+        function renderGridCards(list) {
+            const gridContainer = document.getElementById('view-grid');
+            gridContainer.innerHTML = '';
+
+            list.forEach((player, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-emerald-500/50 transition-all cursor-pointer shadow-lg";
+                card.onclick = () => openPlayerModal(player.name);
+
+                let statsBlock = '';
+                if (currentTab === 'all-time') {
+                    statsBlock = `
+                        <div class="grid grid-cols-3 gap-2 bg-gray-950 p-2.5 rounded-lg border border-gray-800 text-center">
+                            <div>
+                                <span class="text-[10px] text-gray-400 block font-semibold">GOALS</span>
+                                <span class="text-base font-extrabold text-emerald-400">${player.displayGoals}</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-gray-400 block font-semibold">ASSISTS</span>
+                                <span class="text-base font-extrabold text-cyan-400">${player.displayAssists}</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-gray-400 block font-semibold">G+A</span>
+                                <span class="text-base font-extrabold text-white">${player.displayGA}</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    statsBlock = `
+                        <div class="bg-gray-950 p-3 rounded-lg border border-gray-800 flex items-center justify-between">
+                            <span class="text-xs text-gray-400 font-semibold">${currentTab === 'september' ? 'SEPTEMBER GOALS' : 'AUGUST GOALS'}</span>
+                            <span class="text-xl font-black text-emerald-400">${player.displayGoals}</span>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-extrabold px-2 py-0.5 rounded bg-gray-800 text-gray-300">#${index + 1}</span>
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${player.team}</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-1">${player.name}</h3>
+                    <p class="text-xs text-gray-400 mb-4">${player.position}</p>
+                    ${statsBlock}
+                `;
+                gridContainer.appendChild(card);
+            });
+        }
+
+        // Render Roster Tag Badges in Formations Tab
+        function renderRosters() {
+            const teamATags = document.getElementById('team-a-roster-tags');
+            const teamBTags = document.getElementById('team-b-roster-tags');
+
+            teamATags.innerHTML = '';
+            teamBTags.innerHTML = '';
+
+            PLAYERS.forEach(p => {
+                const tag = document.createElement('button');
+                tag.onclick = () => openPlayerModal(p.name);
+                tag.className = "text-xs px-2.5 py-1 rounded-lg font-medium transition bg-gray-800 hover:bg-gray-700 text-gray-300";
+                tag.textContent = `${p.name} (${p.position})`;
+
+                if (p.team === 'Team A') {
+                    teamATags.appendChild(tag);
+                } else {
+                    teamBTags.appendChild(tag);
+                }
+            });
+        }
+
+        // Open Player Breakdown Modal
+        function openPlayerModal(playerName) {
+            const player = PLAYERS.find(p => p.name.toLowerCase() === playerName.toLowerCase());
+            if (!player) return;
+
+            const modal = document.getElementById('player-modal');
+            const content = document.getElementById('modal-content');
+
+            content.innerHTML = `
+                <div class="flex items-center space-x-4 mb-6">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-cyan-400 flex items-center justify-center text-gray-950 font-black text-2xl shadow-lg">
+                        ${player.name.charAt(0)}
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-white">${player.name}</h2>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 mt-1">
+                            ${player.team} • ${player.position}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- All-Time Section (Goals & Assists) -->
+                <div class="mb-6">
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">All-Time Statistics</h4>
+                    <div class="grid grid-cols-3 gap-3 bg-gray-950 p-4 rounded-xl border border-gray-800 text-center">
+                        <div>
+                            <span class="text-xs text-gray-400 font-semibold block mb-1">GOALS</span>
+                            <span class="text-2xl font-black text-emerald-400">${player.goals}</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-gray-400 font-semibold block mb-1">ASSISTS</span>
+                            <span class="text-2xl font-black text-cyan-400">${player.assists}</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-gray-400 font-semibold block mb-1">TOTAL G+A</span>
+                            <span class="text-2xl font-black text-white">${player.goals + player.assists}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Goals Only Breakdown (NO ASSISTS) -->
+                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Monthly Goals Breakdown</h4>
+                <div class="space-y-2 mb-6">
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-gray-800/50">
+                        <span class="text-sm font-semibold text-gray-300">September Goals</span>
+                        <span class="text-sm font-bold text-emerald-400">${player.sepGoals} Goals</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-gray-800/50">
+                        <span class="text-sm font-semibold text-gray-300">August Goals</span>
+                        <span class="text-sm font-bold text-emerald-400">${player.augGoals} Goals</span>
+                    </div>
+                </div>
+
+                <button onclick="closePlayerModal()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-gray-950 font-bold rounded-xl shadow-lg hover:opacity-95 transition">
+                    Close Breakdown
+                </button>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        // Close Modal
+        function closePlayerModal() {
+            document.getElementById('player-modal').classList.add('hidden');
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
